@@ -1,4 +1,5 @@
-FROM node:20-alpine
+# base image, ideally to pick up from own docker repository to avoid rate limiting
+FROM node:20.18.0-alpine3.20
 
 # Create app directory
 WORKDIR /usr/src/app
