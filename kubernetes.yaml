@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {APP_NAME_FROM_REPOSITORY}
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: {APP_NAME_FROM_REPOSITORY}
+  template:
+    metadata:
+      labels:
+        app: {APP_NAME_FROM_REPOSITORY}
+    spec:
+      containers:
+      - name: {APP_NAME_FROM_REPOSITORY}
+        image: {AWS_ECR_REPOSITORY}:{IMAGE_TAG}
+        resources:
+          requests:
+            cpu: 256m
+            memory: 512Mi
+          limits:
+            cpu: 256m
+            memory: 512Mi
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {APP_NAME_FROM_REPOSITORY}
+spec:
+  selector:
+    app: {APP_NAME_FROM_REPOSITORY}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
