@@ -1,11 +1,11 @@
 # base image, ideally to pick up from own docker repository to avoid rate limiting
 FROM node:20.18.0-alpine3.20
 
-# Create app directory
+# create app directory & make it current
 WORKDIR /usr/src/app
 
-# Install app dependencies
-COPY src/package.json ./
+# ensure both package.json AND package-lock.json are copied
+COPY src/package*.json ./
 
 RUN npm ci --only=production
 
