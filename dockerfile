@@ -10,6 +10,12 @@ RUN npm install
 
 COPY src .
 
+# Use a non-root user with an explicit linux UID (not to run from the root) and add permission to access the /usr/src/app folder 
+RUN adduser -u 55555 -D appuser && chown -R appuser /usr/src/app
+
+# Change to non-root privilege
+USER appuser
+
 # Expose the port the app runs on
 EXPOSE 3000
 
