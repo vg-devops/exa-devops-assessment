@@ -24,5 +24,8 @@ jobs:
         cache: 'npm'
 
     - name: Install Dependencies
-      working-directory: ./src
-      run: npm ci
+      run: |
+        pwd
+        ls -lat
+        cd ./src
+        npm ci
