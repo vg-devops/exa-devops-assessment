@@ -7,6 +7,9 @@ on:
   push:
     branches: [ "feature/*" ]
 
+env:
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
 jobs:
   build:
     runs-on: ubuntu-latest
