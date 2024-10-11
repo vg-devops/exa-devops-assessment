@@ -27,3 +27,7 @@ jobs:
     - name: Install Dependencies
       run: npm ci
       working-directory: ./src
+
+    - name: Run NPM Tests
+      run: npm run test
+      working-directory: ./src
