@@ -52,9 +52,9 @@ jobs:
     - name: Check and Create ECR Repository
       run: |
         ECR_REPOSITORY="${{ github.event.repository.name }}"
-        if ! aws ecr describe-repositories --repository-names "$ECR_REPOSITORY" --query 'repositories[0].repositoryName' --output text >/dev/null 2>&1; then
+        if ! aws ecr describe-repositories --repository-names "$ECR_REPOSITORY" --query 'repositories[0].repositoryName' --region ${{ secrets.AWS_REGION }} --output text >/dev/null 2>&1; then
           echo "Repository does not exist. Creating..."
-         aws ecr create-repository --repository-name "$ECR_REPOSITORY" --image-scanning-configuration scanOnPush=false ## cheaper option, use for test project
+         aws ecr create-repository --repository-name "$ECR_REPOSITORY" --region ${{ secrets.AWS_REGION }} --image-scanning-configuration scanOnPush=false ## cheaper option, use for test project
         else
-          echo "Repository already exists."
+          echo "Repository already exists"
         fi
