@@ -16,6 +16,7 @@ on:
 env:
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
   NAMESPACE: ${{ secrets.NAMESPACE }}
+  CI_WORKFLOW_NAME: "BUILD"
 
 jobs:
   fetch_latest_build:
