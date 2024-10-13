@@ -76,3 +76,13 @@ jobs:
       run: |
         docker build -f dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: Keep Build Information
+      run: |
+        echo "${{ github.run_number }}-feature-${FEATURE_NAME}" > build_info.txt
+
+    - name: Upload Build Info as Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-info
+        path: build_info.txt        
