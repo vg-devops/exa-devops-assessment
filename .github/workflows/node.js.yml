@@ -78,8 +78,10 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Keep Build Information
+      env:
+        build_data : ${{ steps.define-docker-tag.outputs.DOCKER_TAG }}
       run: |
-        echo "${{ github.run_number }}-feature-${FEATURE_NAME}" > build_info.txt
+        echo "$build_data" > build_info.txt
 
     - name: Upload Build Info as Artifacts
       uses: actions/upload-artifact@v4
