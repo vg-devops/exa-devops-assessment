@@ -73,3 +73,6 @@ jobs:
         ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
         ECR_REPOSITORY: ${{ github.event.repository.name }}
         IMAGE_TAG: ${{ steps.define-docker-tag.outputs.DOCKER_TAG }}
+      run: |
+        docker build -f dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
