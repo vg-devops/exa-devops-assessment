@@ -1,0 +1,36 @@
+name: DEPLOYMENT
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_environment:
+        description: 'Choose deployment environment...'
+        required: true
+        type: choice
+        options:
+        - development
+        - testing
+        - staging
+        - production
+
+env:
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+  NAMESPACE: ${{ secrets.NAMESPACE }}
+
+jobs:
+  fetch_latest_build:
+    runs-on: ubuntu-latest
+    outputs:
+      docker_tag: ${{ steps.get_build_info.outputs.docker_tag }}
+    steps:
+    - name: Download latest artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: build-info
+        path: ./
+
+    - name: Obtain build information
+      id: get_build_info
+      run: |
+        DOCKER_TAG=$(cat build_info.txt)
+        echo "docker_tag=${DOCKER_TAG}" >> $GITHUB_OUTPUT
