@@ -63,7 +63,7 @@ jobs:
       id: define-docker-tag
       run: |
         # Extract feature name and replace slash: '/' with dash: '-'
-        FEATURE_NAME=$(echo ${{ github.ref_name }} | sed 's/feature\///' | sed 's/\//-/g')
+        FEATURE_NAME=$(echo ${{ github.ref_name }} | sed 's/feature\///' | sed 's/\//-/g' | sed 's/\(.\{115\}\).*/\1/') # add truncation for max tag length
         # Combine build number and feature name for the tag
         DOCKER_TAG="${{ github.run_number }}-feature-${FEATURE_NAME}"
         echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_OUTPUT
