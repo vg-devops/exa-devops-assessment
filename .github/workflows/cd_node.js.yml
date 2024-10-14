@@ -118,7 +118,7 @@ jobs:
         sed -i 's/{NAMESPACE}/${{ env.NAMESPACE }}/g' kubernetes.yaml
         sed -i 's/{APP_NAME_FROM_REPOSITORY}/${{ github.event.repository.name }}/g' kubernetes.yaml
         sed -i 's|{IMAGE_WITH_TAG}|${{ env.ECR_REGISTRY }}/${{ github.event.repository.name }}:${{ needs.fetch_latest_build.outputs.docker_tag }}|g' kubernetes.yaml
-        # cat kubernetes.yaml
+        cat kubernetes.yaml
 
     - name: Cluster Deployment
       run: |
