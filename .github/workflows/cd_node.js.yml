@@ -110,6 +110,9 @@ jobs:
       run: |
         aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
+    - name: Checkout Current repository
+      uses: actions/checkout@v4
+
     - name: Update Kubernetes.yaml with env vars/secrets
       run: |
         sed -i 's/{NAMESPACE}/${{ env.NAMESPACE }}/g' kubernetes.yaml
