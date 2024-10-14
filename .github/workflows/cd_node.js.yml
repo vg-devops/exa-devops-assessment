@@ -116,4 +116,15 @@ jobs:
         sed -i 's/{APP_NAME_FROM_REPOSITORY}/${{ github.event.repository.name }}/g' kubernetes.yaml
         sed -i 's|{IMAGE}|${{ env.ECR_REGISTRY }}/${{ github.event.repository.name }}:${{ needs.fetch_latest_build.outputs.docker_tag }}|g' kubernetes.yaml
 
-        
+    - name: Cluster Deployment
+      run: |
+        kubectl apply -f kubernetes.yaml 
+        kubectl rollout status deploy/${{ github.event.repository.name }}-deployment -n ${{ env.NAMESPACE }} \
+        || (echo "Rolling back deployment:" \
+            && kubectl rollout undo deploy/${{ github.event.repository.name }}-deployment -n ${{ env.NAMESPACE }}  \
+            && exit 1)
+
+    - name: Deployment Status
+      if: success()
+      run: |
+        echo "Deployed ${{ needs.fetch_latest_build.outputs.docker_tag }} to ${{ github.event.inputs.environment }}"        
