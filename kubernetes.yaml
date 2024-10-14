@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {APP_NAME_FROM_REPOSITORY}
+  name: {APP_NAME_FROM_REPOSITORY}-deployment
+  namespace: {NAMESPACE}
 spec:
   replicas: 2
   selector:
@@ -14,7 +15,7 @@ spec:
     spec:
       containers:
       - name: {APP_NAME_FROM_REPOSITORY}
-        image: {AWS_ECR_REPOSITORY}:{IMAGE_TAG}
+        image: {IMAGE_WITH_TAG}
         resources:
           requests:
             cpu: 256m
@@ -28,7 +29,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {APP_NAME_FROM_REPOSITORY}
+  name: {APP_NAME_FROM_REPOSITORY}-svc
+  namespace: {NAMESPACE}
 spec:
   selector:
     app: {APP_NAME_FROM_REPOSITORY}
