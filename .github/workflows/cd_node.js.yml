@@ -68,4 +68,5 @@ jobs:
       id: get_build_info
       run: |
         DOCKER_TAG=$(cat build_info.txt)
+        echo "docker_tag=${DOCKER_TAG}"
         echo "docker_tag=${DOCKER_TAG}" >> $GITHUB_OUTPUT
