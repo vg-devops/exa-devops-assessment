@@ -8,10 +8,10 @@ on:
         required: true
         type: choice
         options:
-        - development
-        - testing
-        - staging
-        - production
+        - Development
+        - Testing
+        - Staging
+        - Production
 
 env:
   ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
