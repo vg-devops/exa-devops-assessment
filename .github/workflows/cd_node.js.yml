@@ -70,3 +70,10 @@ jobs:
         DOCKER_TAG=$(cat build_info.txt)
         echo "docker_tag=${DOCKER_TAG}"
         echo "docker_tag=${DOCKER_TAG}" >> $GITHUB_OUTPUT
+
+  deploy:
+      needs: fetch_latest_build
+      runs-on: ubuntu-latest
+      environment: ${{ github.event.inputs.start_environment }}
+ 
+     
