@@ -50,7 +50,7 @@ metadata:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/subnets: ["subnet_ids"]
+    alb.ingress.kubernetes.io/subnets: subnet-02014f670efaf99f4, subnet-054092579d914f68a, subnet-08c3d650ee1834670
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
     alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/group.name: {APP_NAME_FROM_REPOSITORY}-group
