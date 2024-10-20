@@ -40,3 +40,30 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {APP_NAME_FROM_REPOSITORY}-ingress
+  namespace: fargate-ns
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: ["subnet_ids"]
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/group.name: {APP_NAME_FROM_REPOSITORY}-group
+    alb.ingress.kubernetes.io/group.order: '1'
+    alb.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /exa
+            pathType: Prefix
+            backend:
+              service:
+                name: {APP_NAME_FROM_REPOSITORY}-svc
+                port: 
+                  number: 80
