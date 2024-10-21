@@ -96,9 +96,39 @@ jobs:
       with:
         version: 'v1.30.0'
 
+    # - name: tempo debug
+    #   run: |
+    #     echo "Selected Environment: ${{ github.event.inputs.start_environment }}"
+    #     echo "Current Environment: ${{ env.ENVIRONMENT }}"
+    #     if [ -n "${{ secrets.EKS_CLUSTER_NAME }}" ]; then
+    #       echo "EKS_CLUSTER_NAME is set"
+    #     else
+    #       echo "EKS_CLUSTER_NAME is not set"
+    #     fi
+
     - name: Update kubeconfig
       run: |
         aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
-  
 
-     
+    - name: Checkout Current repository
+      uses: actions/checkout@v4
+
+    - name: Update Kubernetes.yaml with env vars/secrets
+      run: |
+        sed -i 's/{NAMESPACE}/${{ env.NAMESPACE }}/g' kubernetes.yaml
+        sed -i 's/{APP_NAME_FROM_REPOSITORY}/${{ github.event.repository.name }}/g' kubernetes.yaml
+        sed -i 's|{IMAGE_WITH_TAG}|${{ env.ECR_REGISTRY }}/${{ github.event.repository.name }}:${{ needs.fetch_latest_build.outputs.docker_tag }}|g' kubernetes.yaml
+        cat kubernetes.yaml
+
+    - name: Cluster Deployment
+      run: |
+        kubectl apply -f kubernetes.yaml 
+        kubectl rollout status deploy/${{ github.event.repository.name }}-deployment -n ${{ env.NAMESPACE }} \
+        || (echo "Rolling back deployment:" \
+            && kubectl rollout undo deploy/${{ github.event.repository.name }}-deployment -n ${{ env.NAMESPACE }}  \
+            && exit 1)
+
+    - name: Deployment Status
+      if: success()
+      run: |
+        echo "Deployed ${{ needs.fetch_latest_build.outputs.docker_tag }} to ${{ github.event.inputs.environment }}"        

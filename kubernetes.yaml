@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {APP_NAME_FROM_REPOSITORY}
+  name: {APP_NAME_FROM_REPOSITORY}-deployment
+  namespace: {NAMESPACE}
 spec:
   replicas: 2
   selector:
@@ -11,10 +12,11 @@ spec:
     metadata:
       labels:
         app: {APP_NAME_FROM_REPOSITORY}
+        fargate: "true"
     spec:
       containers:
       - name: {APP_NAME_FROM_REPOSITORY}
-        image: {AWS_ECR_REPOSITORY}:{IMAGE_TAG}
+        image: {IMAGE_WITH_TAG}
         resources:
           requests:
             cpu: 256m
@@ -28,11 +30,40 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {APP_NAME_FROM_REPOSITORY}
+  name: {APP_NAME_FROM_REPOSITORY}-svc
+  namespace: {NAMESPACE}
 spec:
   selector:
     app: {APP_NAME_FROM_REPOSITORY}
+    fargate: "true"
   ports:
     - protocol: TCP
       port: 80
       targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {APP_NAME_FROM_REPOSITORY}-ingress
+  namespace: fargate-ns
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: subnet-02014f670efaf99f4, subnet-054092579d914f68a, subnet-08c3d650ee1834670
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/group.name: {APP_NAME_FROM_REPOSITORY}-group
+    alb.ingress.kubernetes.io/group.order: '1'
+    alb.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /exa
+            pathType: Prefix
+            backend:
+              service:
+                name: {APP_NAME_FROM_REPOSITORY}-svc
+                port: 
+                  number: 80
